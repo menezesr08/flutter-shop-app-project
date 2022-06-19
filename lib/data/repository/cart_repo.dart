@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:food_delivery/utils/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/cart_model.dart';
@@ -21,9 +22,24 @@ class CartRepo {
       return cart.add(jsonEncode(element));
     });
 
-    sharedPreferences.setStringList("Cart-list", cart);
+    sharedPreferences.setStringList(AppConstants.CART_LIST, cart);
     print(
-      sharedPreferences.getStringList("Cart-list"),
+      sharedPreferences.getStringList(AppConstants.CART_LIST),
     );
+    getCartList();
   }
+
+  List<CartModel> getCartList() {
+    List<String> carts = [];
+    if(sharedPreferences.containsKey(AppConstants.CART_LIST)) {
+      carts = sharedPreferences.getStringList(AppConstants.CART_LIST)!;
+    }
+    List<CartModel> cartList = [];
+
+    carts.forEach((element) {
+      cartList.add(CartModel.fromJson(jsonDecode(element)));
+    });
+    return cartList;
+  }
+
 }
